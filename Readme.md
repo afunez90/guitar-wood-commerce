@@ -102,7 +102,9 @@ El backend estará disponible en
 http://127.0.0.1:8000
 La documentación interactiva de la API puede consultarse en
 http://127.0.0.1:8000/docs
+
 Desarrollo del Frontend
+
 El frontend estático puede ejecutarse con Live Server dentro de Visual Studio Code.
 Abrir el archivo index.html y ejecutar Live Server para visualizar la tienda.
 
@@ -113,11 +115,54 @@ Creación y manejo de rutas en FastAPI.
 Configuración de React con TypeScript para validación de formularios.
 Gestión del repositorio Git con múltiples tecnologías dentro del mismo proyecto.
 
-Próximas Mejoras
-Conectar el catálogo de productos directamente con la API del backend.
-Implementar autenticación de usuarios con tokens JWT.
-Crear un sistema funcional de carrito de compras.
-Añadir un sistema de pagos para completar el flujo de compra.
+
+Despliegue en AWS EC2
+
+Se desplegó la plataforma GuitarWood en una instancia EC2 de AWS utilizando Amazon Linux 2023 como sistema operativo y una instancia tipo t3.micro. Se configuraron los puertos necesarios en el Security Group (22 para SSH, 80 para HTTP y 443 para HTTPS), permitiendo el acceso remoto y la visualización de la aplicación desde internet.
+La conexión a la instancia se realizó mediante SSH usando una clave privada (.pem).
+Configuración del servidor
+Se instaló y configuró el servidor web Apache, junto con PHP y sus extensiones necesarias para ejecutar la aplicación:
+Apache (httpd)
+PHP
+Git
+MariaDB
+
+El proyecto fue clonado desde GitHub y copiado al directorio público /var/www/html/, permitiendo su acceso desde:
+http://18.188.79.104
+
+Configuración de la base de datos
+
+Se instaló MariaDB en la instancia EC2 y se configuró una base de datos llamada guitarwood, junto con un usuario con permisos completos.
+Se creó una tabla de productos y se insertaron datos de prueba para validar el funcionamiento.
+Integración con la aplicación
+Se implementó un script en PHP (productos.php) que realiza una consulta a la base de datos y muestra los productos almacenados, confirmando la conexión entre la aplicación y MariaDB.
+
+Acceso de prueba:
+http://18.188.79.104/productos.php
+
+Evidencias
+Instancia EC2 en ejecución
+Conexión SSH desde terminal
+Servidor Apache funcionando
+Aplicación desplegada en navegador
+Consulta a base de datos desde PHP
+
+Desafíos y soluciones
+
+Error al ejecutar comandos en MariaDB → se corrigió usando la terminal adecuada
+Problemas con archivos no encontrados → se ajustaron rutas en /var/www/html/
+Fallas de conexión SSH → se corrigieron permisos del archivo .pem
+Integración inicial sin base de datos → se implementó conexión mediante PHP
+
+Acceso al proyecto
+
+Aplicación en línea:
+http://18.188.79.104
+Repositorio en GitHub:
+https://github.com/afunez90/guitar-wood-commerce
+
+Conclusión
+Se logró desplegar exitosamente la aplicación en AWS EC2, configurando el servidor web, la base de datos y validando la conexión funcional entre ambos, cumpliendo todos los requerimientos del proyecto.
 
 Autor
 Abner Funez
