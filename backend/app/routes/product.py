@@ -4,13 +4,19 @@ from sqlalchemy import select
 
 from app.db.postgres import get_db
 from app.models.product import Product
+from app.models.user import User
 from app.schemas.product import ProductCreate, ProductOut
+from app.core.dependencias import get_current_user
 
 router = APIRouter(prefix="/products", tags=["products"])
 
 
 @router.post("/", response_model=ProductOut)
-def create_product(payload: ProductCreate, db: Session = Depends(get_db)):
+def create_product(
+    payload: ProductCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     product = Product(**payload.model_dump())
     db.add(product)
     db.commit()
@@ -27,13 +33,20 @@ def list_products(db: Session = Depends(get_db)):
 @router.get("/{product_id}", response_model=ProductOut)
 def get_product(product_id: int, db: Session = Depends(get_db)):
     product = db.get(Product, product_id)
+
     if not product:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
+
     return product
 
 
 @router.put("/{product_id}", response_model=ProductOut)
-def update_product(product_id: int, payload: ProductCreate, db: Session = Depends(get_db)):
+def update_product(
+    product_id: int,
+    payload: ProductCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     product = db.get(Product, product_id)
 
     if not product:
@@ -48,7 +61,11 @@ def update_product(product_id: int, payload: ProductCreate, db: Session = Depend
 
 
 @router.delete("/{product_id}")
-def delete_product(product_id: int, db: Session = Depends(get_db)):
+def delete_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     product = db.get(Product, product_id)
 
     if not product:
@@ -56,4 +73,5 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
 
     db.delete(product)
     db.commit()
+
     return {"message": "Producto eliminado correctamente"}

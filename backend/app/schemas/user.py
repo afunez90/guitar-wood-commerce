@@ -1,10 +1,17 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr
+
 
 class UserCreate(BaseModel):
-    nombre: str = Field(min_length=2)
+    nombre: str
     email: EmailStr
-    password: str = Field(min_length=8)
-    fecha_nacimiento: str  # YYYY-MM-DD
+    password: str
+    fecha_nacimiento: str
+
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
 
 class UserOut(BaseModel):
     id: int
@@ -14,3 +21,8 @@ class UserOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
