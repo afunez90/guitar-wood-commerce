@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type FormData = {
   nombre: string;
@@ -16,11 +17,17 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function calcAge(dateISO: string): number | null {
   if (!dateISO) return null;
+
   const birth = new Date(dateISO);
   const today = new Date();
+
   let age = today.getFullYear() - birth.getFullYear();
   const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+
   return age;
 }
 
@@ -31,6 +38,8 @@ function passwordStrength(password: string): string {
 }
 
 export default function AccountForm() {
+  const navigate = useNavigate();
+
   const [data, setData] = useState<FormData>({
     nombre: "",
     email: "",
@@ -38,7 +47,7 @@ export default function AccountForm() {
     confirmPassword: "",
     fechaNacimiento: "",
     cantidad: 1,
-    aceptaTerminos: false
+    aceptaTerminos: false,
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -52,24 +61,32 @@ export default function AccountForm() {
   if (!data.nombre.trim()) errors.nombre = "Nombre obligatorio";
   if (!emailRegex.test(data.email)) errors.email = "Correo inválido";
   if (data.password.length < 6) errors.password = "Mínimo 6 caracteres";
-  if (data.password !== data.confirmPassword)
+  if (data.password !== data.confirmPassword) {
     errors.confirmPassword = "Las contraseñas no coinciden";
-  if (age !== null && age < 18)
+  }
+  if (age !== null && age < 18) {
     errors.fechaNacimiento = "Debes ser mayor de edad";
-  if (!data.aceptaTerminos)
+  }
+  if (!data.aceptaTerminos) {
     errors.aceptaTerminos = "Debes aceptar los términos";
+  }
 
   const isValid = Object.keys(errors).length === 0;
 
-  const setField = (field: keyof FormData, value: any) => {
-    setData({ ...data, [field]: value });
+  const setField = <K extends keyof FormData>(field: K, value: FormData[K]) => {
+    setData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isValid) {
-      setSubmitted(true);
-    }
+
+    if (!isValid) return;
+
+    setSubmitted(true);
+
+    setTimeout(() => {
+      navigate("/");
+    }, 1500);
   };
 
   return (
@@ -80,16 +97,10 @@ export default function AccountForm() {
           Formulario con React + TypeScript + validación dinámica.
         </p>
 
-        {submitted && (
-          <div className="success">
-            Cuenta creada correctamente.
-          </div>
-        )}
+        {submitted && <div className="success">Cuenta creada correctamente.</div>}
 
         <form onSubmit={handleSubmit}>
-
           <div className="grid2">
-
             <label>
               Nombre completo
               <input
@@ -122,9 +133,11 @@ export default function AccountForm() {
               >
                 {showPassword ? "Ocultar" : "Mostrar"}
               </button>
+
               <span className={`strength ${strength.toLowerCase()}`}>
                 Fuerza: {strength}
               </span>
+
               {errors.password && <span className="error">{errors.password}</span>}
             </label>
 
@@ -162,19 +175,17 @@ export default function AccountForm() {
                 onChange={(e) => setField("cantidad", Number(e.target.value))}
               />
             </label>
-
           </div>
 
           <label className="check">
             <input
               type="checkbox"
               checked={data.aceptaTerminos}
-              onChange={(e) =>
-                setField("aceptaTerminos", e.target.checked)
-              }
+              onChange={(e) => setField("aceptaTerminos", e.target.checked)}
             />
             Acepto términos y condiciones
           </label>
+
           {errors.aceptaTerminos && (
             <span className="error">{errors.aceptaTerminos}</span>
           )}
@@ -182,7 +193,6 @@ export default function AccountForm() {
           <button type="submit" disabled={!isValid} className="btnWood">
             Crear cuenta
           </button>
-
         </form>
       </div>
     </div>
