@@ -10,3 +10,6 @@ class Product(Base):
     precio = Column(Float, nullable=False)
     stock = Column(Integer, nullable=False)
     categoria = Column(String, nullable=False)
+
+
+    

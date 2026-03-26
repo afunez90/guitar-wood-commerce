@@ -102,9 +102,7 @@ El backend estará disponible en
 http://127.0.0.1:8000
 La documentación interactiva de la API puede consultarse en
 http://127.0.0.1:8000/docs
-
 Desarrollo del Frontend
-
 El frontend estático puede ejecutarse con Live Server dentro de Visual Studio Code.
 Abrir el archivo index.html y ejecutar Live Server para visualizar la tienda.
 
@@ -115,54 +113,62 @@ Creación y manejo de rutas en FastAPI.
 Configuración de React con TypeScript para validación de formularios.
 Gestión del repositorio Git con múltiples tecnologías dentro del mismo proyecto.
 
+Autenticación y Seguridad
+Se implementó autenticación en el backend con FastAPI.
+Registro (/auth/register): crea usuarios validando email único y encriptando la contraseña con bcrypt.
+Login (/auth/login): valida credenciales y genera un token JWT.
+Protección de rutas: se usa Depends(get_current_user) para restringir acceso a endpoints como productos.
 
-Despliegue en AWS EC2
+Seguridad:
+Contraseñas encriptadas con passlib + bcrypt
+Uso de tokens JWT con expiración
 
-Se desplegó la plataforma GuitarWood en una instancia EC2 de AWS utilizando Amazon Linux 2023 como sistema operativo y una instancia tipo t3.micro. Se configuraron los puertos necesarios en el Security Group (22 para SSH, 80 para HTTP y 443 para HTTPS), permitiendo el acceso remoto y la visualización de la aplicación desde internet.
-La conexión a la instancia se realizó mediante SSH usando una clave privada (.pem).
-Configuración del servidor
-Se instaló y configuró el servidor web Apache, junto con PHP y sus extensiones necesarias para ejecutar la aplicación:
-Apache (httpd)
-PHP
-Git
-MariaDB
+Problema y solución
 
-El proyecto fue clonado desde GitHub y copiado al directorio público /var/www/html/, permitiendo su acceso desde:
-http://18.188.79.104
+Error con bcrypt:
+module 'bcrypt' has no attribute '__about__'
 
-Configuración de la base de datos
+Solución:
 
-Se instaló MariaDB en la instancia EC2 y se configuró una base de datos llamada guitarwood, junto con un usuario con permisos completos.
-Se creó una tabla de productos y se insertaron datos de prueba para validar el funcionamiento.
-Integración con la aplicación
-Se implementó un script en PHP (productos.php) que realiza una consulta a la base de datos y muestra los productos almacenados, confirmando la conexión entre la aplicación y MariaDB.
+pip install bcrypt==4.0.1
 
-Acceso de prueba:
-http://18.188.79.104/productos.php
+Dependencias
 
-Evidencias
-Instancia EC2 en ejecución
-Conexión SSH desde terminal
-Servidor Apache funcionando
-Aplicación desplegada en navegador
-Consulta a base de datos desde PHP
+pip install -r requirements.txt
 
-Desafíos y soluciones
+Ejecución
 
-Error al ejecutar comandos en MariaDB → se corrigió usando la terminal adecuada
-Problemas con archivos no encontrados → se ajustaron rutas en /var/www/html/
-Fallas de conexión SSH → se corrigieron permisos del archivo .pem
-Integración inicial sin base de datos → se implementó conexión mediante PHP
+Backend
+uvicorn app.main:app --reload
+Frontend
+npm run dev
 
-Acceso al proyecto
+Resultado
 
-Aplicación en línea:
-http://18.188.79.104
-Repositorio en GitHub:
-https://github.com/afunez90/guitar-wood-commerce
+Registro y login funcionando
+Generación de token JWT
+Endpoints protegidos
+Contraseñas seguras
 
-Conclusión
-Se logró desplegar exitosamente la aplicación en AWS EC2, configurando el servidor web, la base de datos y validando la conexión funcional entre ambos, cumpliendo todos los requerimientos del proyecto.
+Integración de chatbot con OpenAI en GuitarWood
+
+Se integró un chatbot en la tienda virtual GuitarWood con el propósito de responder preguntas de los usuarios relacionadas con los productos, disponibilidad y precios, utilizando la API de OpenAI desde el backend.
+
+Tecnologías utilizadas
+- FastAPI
+- Python
+- OpenAI API
+- PostgreSQL
+- React + TypeScript
+- Vite
+
+Configuración del entorno
+Para habilitar la integración del chatbot, se configuró una clave de API de OpenAI en el archivo `.env` del backend. Esta clave se cargó de forma segura mediante la clase `Settings` en `config.py`.
+
+Ejemplo de variable agregada:
+
+```env
+OPENAI_API_KEY=tu_api_key
 
 Autor
 Abner Funez
