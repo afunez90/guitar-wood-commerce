@@ -170,6 +170,59 @@ Ejemplo de variable agregada:
 ```env
 OPENAI_API_KEY=tu_api_key
 
+Despliegue en AWS
+
+Se realizó el despliegue de la aplicación GuitarWood utilizando Amazon Web Services mediante una instancia de Amazon EC2, siguiendo estos pasos:
+
+1. Creación de la instancia EC2
+Se creó una instancia virtual en AWS con sistema operativo Linux (Ubuntu).
+Se configuraron reglas de seguridad (Security Groups) permitiendo acceso por:
+HTTP (puerto 80)
+SSH (puerto 22)
+
+2. Conexión al servidor
+Se accedió a la instancia mediante SSH desde la terminal:
+ssh -i "clave.pem" ubuntu@18.188.79.104
+
+3. Preparación del entorno
+Se actualizaron los paquetes del sistema:
+sudo apt update && sudo apt upgrade
+Se instalaron dependencias necesarias:
+PHP
+Apache (servidor web)
+MySQL / PostgreSQL (base de datos)
+
+4. Configuración del servidor web
+Se utilizó Apache para servir la aplicación.
+Se colocó el proyecto dentro de:
+/var/www/html/
+Se ajustaron permisos:
+sudo chown -R www-data:www-data /var/www/html
+
+5. Despliegue del proyecto
+Se subió el código desde GitHub:
+git clone https://github.com/afunez90/guitar-wood-commerce
+Se configuraron las variables de entorno y conexión a la base de datos.
+
+6. Configuración de la base de datos
+Se creó la base de datos en el servidor.
+Se importaron las tablas necesarias.
+Se verificó la conexión desde el backend (CodeIgniter 4).
+
+7. Verificación del sistema
+Se accedió desde el navegador usando la IP pública de la instancia:
+http://18.188.79.104
+
+Se comprobó que:
+El frontend carga correctamente
+El backend responde (CRUD funcionando)
+La base de datos está conectada
+8. Resultado final
+La aplicación quedó desplegada en la nube, accesible públicamente, permitiendo:
+Navegación del catálogo
+Gestión de productos
+Integración completa frontend-backend
+
 Autor
 Abner Funez
 Clase Programming the Internet (CSE6042)
